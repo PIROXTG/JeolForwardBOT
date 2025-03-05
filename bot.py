@@ -12,6 +12,7 @@ from plugins import web_server
 import logging
 import pytz
 import logging.config
+import signal
 
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
@@ -121,7 +122,15 @@ async def main():
     """
     app = Bot()
     await app.start()
-    await app.idle()
+
+    stop_event = asyncio.Event()
+    def signal_handler():
+        stop_event.set()
+    loop = asyncio.get_event_loop()
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(sig, signal_handler)
+    await stop_event.wait()
+    await app.stop()
 
 if __name__ == "__main__":
     asyncio.run(main())
