@@ -1,3 +1,4 @@
+import asyncio
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from datetime import date, datetime
@@ -10,7 +11,6 @@ from aiohttp import web, ClientSession
 from plugins import web_server
 import logging
 import pytz
-import asyncio
 import logging.config
 
 logging.config.fileConfig('logging.conf')
@@ -115,5 +115,13 @@ class Bot(Client):
                 yield message
                 current += 1
 
-app = Bot()
-app.run()
+async def main():
+    """
+    Main async function to run the bot
+    """
+    app = Bot()
+    await app.start()
+    await app.idle()
+
+if __name__ == "__main__":
+    asyncio.run(main())
