@@ -9,11 +9,11 @@ class scripts(object):
 
     START_TXT = """
 <b>Hᴇʟʟᴏ {},
-Mʏ Nᴀᴍᴇ Is <a href=https://t.me/{}>{}</a>, I'm Just A Private Forward Bot Made By <a href='t.me/piroxbots'>🇵 🇮 🇷 🇴</a>.</b>"""
+Mʏ Nᴀᴍᴇ Is <a href=https://t.me/{}>{}</a>, I'm Just A Private Forward Bot Made By <a href='t.me/piroxbots'>𝖯𝗂𝖱𝖮</a>.</b>"""
 
     ABOUT_TXT = """
 <b>✯ Mʏ Nᴀᴍᴇ: {}
-✯ Cʀᴇᴀᴛᴏʀ: <a href='https://t.me/piroxbots'>🇵 🇮 🇷 🇴</a>
+✯ Cʀᴇᴀᴛᴏʀ: <a href='https://t.me/piroxbots'>𝖯𝗂𝖱𝖮</a>
 ✯ Lɪʙʀᴀʀʏ: <a href='https://docs.pyrogram.org/'>Pʏʀᴏɢʀᴀᴍ</a>
 ✯ Lᴀɴɢᴜᴀɢᴇ: <a href='https://www.python.org/download/releases/3.0/'>Pʏᴛʜᴏɴ 3</a>
 ✯ Bᴜɪʟᴅ Sᴛᴀᴛᴜs: v1.0.1 [ Sᴛᴀʙʟᴇ ]</b>"""
@@ -23,7 +23,7 @@ Mʏ Nᴀᴍᴇ Is <a href=https://t.me/{}>{}</a>, I'm Just A Private Forward Bot
 - ᴛʜɪꜱ ʙᴏᴛ ɪꜱ ᴀɴ ᴏᴘᴇɴ ꜱᴏᴜʀᴄᴇ ᴘʀᴏᴊᴇᴄᴛ.
 - ꜱᴏᴜʀᴄᴇ - <a href="https://github.com/PIROXTG/JeolForwardBOT">ʜᴇʀᴇ</a>
 Dᴇᴠᴇʟᴏᴘᴇʀ:
-- <a href="https://t.me/piroxbots">🇵 🇮 🇷 🇴</a></b>"""
+- <a href="https://t.me/piroxbots">𝖯𝗂𝖱𝖮</a></b>"""
 
     HELP_TXT = """
 <b>Here are all my commands:
