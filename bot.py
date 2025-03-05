@@ -1,3 +1,4 @@
+import os
 import asyncio
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
@@ -17,6 +18,10 @@ import signal
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
+
+SESSION_FILE = f"{SESSION}.session"
+if os.path.exists(SESSION_FILE):
+    os.remove(SESSION_FILE)
 
 class Bot(Client):
     def __init__(self):
