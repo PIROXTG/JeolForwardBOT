@@ -13,7 +13,6 @@ import pytz
 import asyncio
 import logging.config
 
-# Get logging configuration
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
@@ -44,8 +43,7 @@ class Bot(Client):
             except Exception as e:
                 logging.error(f"Keep-alive error: {e}")
             
-            # Wait for 25 minutes (most platforms have a 30-minute sleep timeout)
-            await asyncio.sleep(25 * 60)
+            await asyncio.sleep(7 * 60)
 
     async def start(self):
         await super().start()
@@ -63,18 +61,15 @@ class Bot(Client):
         
         await self.send_message(chat_id=LOG_CHANNEL, text=scripts.RESTART_TXT.format(today, time))
         
-        # Setup web server
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
         await web.TCPSite(app, bind_address, PORT).start()
         
-        # Start keep-alive task
         if APP_URL:
             self.keep_alive_task = asyncio.create_task(self.keep_alive())
         
     async def stop(self, *args):
-        # Cancel keep-alive task if it exists
         if self.keep_alive_task:
             self.keep_alive_task.cancel()
         
@@ -120,6 +115,5 @@ class Bot(Client):
                 yield message
                 current += 1
 
-# Create and run the bot
 app = Bot()
 app.run()
