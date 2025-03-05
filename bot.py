@@ -30,7 +30,9 @@ class Bot(Client):
             api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
-            plugins={"root": "plugins"}
+            workers=25,
+            plugins={"root": "plugins"},
+            sleep_threshold=7
         )
         self.keep_alive_task = None
 
