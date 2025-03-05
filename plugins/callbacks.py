@@ -3,7 +3,8 @@ from pyrogram import Client
 from script import scripts
 from utils import temp_utils
 import logging
-from .commands import start_forward
+from database.data_base import db
+from .functions import start_forward
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -46,7 +47,8 @@ async def query_handler(bot: Client, query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(btn)
         )
     elif query.data == "cancel_forward":
-        temp_utils.CANCEL = True
+        temp_utils.CANCEL[int(query.from_user.id)] = True
+        await query.answer("Cancelling Process !\n\nIf the bot is sleeping, It will cancell only after the sleeping is over !", show_alert=True)
     elif query.data == "help":
         btn = [[
             InlineKeyboardButton("Go Back", callback_data="home"),
@@ -58,6 +60,9 @@ async def query_handler(bot: Client, query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(btn)
         )
     elif query.data.startswith("forward"):
-        ident, source_chat_id, last_msg_id = query.data.split("#")
+        ident, userid = query.data.split("#")
+        if int(query.from_user.id) != int(userid):
+            return await query.answer("You can't touch this !")
+        user = await db.get_user(int(userid))
         await query.message.delete()
-        await start_forward(bot, query.from_user.id, source_chat_id, last_msg_id)
+        await start_forward(bot, userid, user['skip'])
