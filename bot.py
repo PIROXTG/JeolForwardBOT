@@ -1,25 +1,24 @@
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from datetime import date, datetime
-from vars import SESSION, API_HASH, API_ID, BOT_TOKEN, LOG_CHANNEL, PORT
+from vars import SESSION, API_HASH, API_ID, BOT_TOKEN, LOG_CHANNEL, PORT, APP_URL
 from typing import Union, Optional, AsyncGenerator
 from script import scripts
 from pyrogram import types
 from utils import temp_utils
-from aiohttp import web
+from aiohttp import web, ClientSession
 from plugins import web_server
 import logging
 import pytz
+import asyncio
 import logging.config
 
-#Get logging configuration
+# Get logging configuration
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
-
 class Bot(Client):
-
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -28,6 +27,25 @@ class Bot(Client):
             bot_token=BOT_TOKEN,
             plugins={"root": "plugins"}
         )
+        self.keep_alive_task = None
+
+    async def keep_alive(self):
+        """
+        Periodically ping the app URL to prevent the application from sleeping
+        """
+        while True:
+            try:
+                async with ClientSession() as session:
+                    async with session.get(APP_URL) as response:
+                        if response.status == 200:
+                            logging.info(f"Keep-alive ping to {APP_URL} successful")
+                        else:
+                            logging.warning(f"Keep-alive ping failed. Status code: {response.status}")
+            except Exception as e:
+                logging.error(f"Keep-alive error: {e}")
+            
+            # Wait for 25 minutes (most platforms have a 30-minute sleep timeout)
+            await asyncio.sleep(25 * 60)
 
     async def start(self):
         await super().start()
@@ -37,20 +55,32 @@ class Bot(Client):
         temp_utils.BOT_NAME = me.first_name
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
+        
         tz = pytz.timezone('Asia/Kolkata')
         today = date.today()
         now = datetime.now(tz)
         time = now.strftime("%H:%M:%S %p")
+        
         await self.send_message(chat_id=LOG_CHANNEL, text=scripts.RESTART_TXT.format(today, time))
+        
+        # Setup web server
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
         await web.TCPSite(app, bind_address, PORT).start()
         
+        # Start keep-alive task
+        if APP_URL:
+            self.keep_alive_task = asyncio.create_task(self.keep_alive())
+        
     async def stop(self, *args):
+        # Cancel keep-alive task if it exists
+        if self.keep_alive_task:
+            self.keep_alive_task.cancel()
+        
         await super().stop()
         logging.info("Bot stopped. Bye.")
-
+    
     async def iter_messages(
         self,
         chat_id: Union[int, str],
@@ -90,6 +120,6 @@ class Bot(Client):
                 yield message
                 current += 1
 
-
+# Create and run the bot
 app = Bot()
 app.run()
