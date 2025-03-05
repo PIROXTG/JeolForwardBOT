@@ -20,3 +20,5 @@ ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ
 TARGET_DB = int(environ.get("TARGET_DB", 0))
 UPSTREAM_REPO = environ.get("UPSTREAM_REPO", "https://github.com/PIROXTG/JeolForwardBOT")
 APP_URL = "https://your-koyeb-app-url.app"
+DB_URI = environ.get('DB_URI', "")
+DB_NAME = environ.get('DB_NAME', "")
